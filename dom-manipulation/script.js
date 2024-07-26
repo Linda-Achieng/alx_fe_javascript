@@ -1,4 +1,3 @@
-
 // Initialize quotes array from local storage or with default quotes
 let quotes = JSON.parse(localStorage.getItem('quotes')) || [
   { text: "The only limit to our realization of tomorrow is our doubts of today.", category: "Motivation" },
