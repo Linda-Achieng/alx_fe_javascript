@@ -1,9 +1,11 @@
-// Initialize quotes array from local storage or with default quotes
 let quotes = JSON.parse(localStorage.getItem('quotes')) || [
   { text: "The only limit to our realization of tomorrow is our doubts of today.", category: "Motivation" },
   { text: "Life is 10% what happens to us and 90% how we react to it.", category: "Life" },
   { text: "Your time is limited, don't waste it living someone else's life.", category: "Inspiration" }
 ];
+
+// Mock server URL using JSONPlaceholder
+const serverUrl = 'https://jsonplaceholder.typicode.com/posts';
 
 // Function to save quotes to local storage
 function saveQuotes() {
@@ -29,6 +31,7 @@ function addQuote() {
     saveQuotes();
     populateCategories();
     alert('New quote added successfully!');
+    syncWithServer();
   } else {
     alert('Please enter both quote text and category.');
   }
@@ -94,12 +97,41 @@ function filterQuotes() {
   localStorage.setItem('selectedCategory', selectedCategory);
 }
 
+// Function to sync local quotes with the server
+async function syncWithServer() {
+  try {
+    const response = await fetch(serverUrl);
+    const serverQuotes = await response.json();
+    resolveConflicts(serverQuotes);
+  } catch (error) {
+    console.error('Error syncing with server:', error);
+  }
+}
+
+// Function to resolve conflicts between local and server data
+function resolveConflicts(serverQuotes) {
+  // Example conflict resolution: Server data takes precedence
+  const localQuotesMap = new Map(quotes.map(q => [q.text, q]));
+
+  serverQuotes.forEach(serverQuote => {
+    if (!localQuotesMap.has(serverQuote.text)) {
+      quotes.push(serverQuote);
+    }
+  });
+
+  saveQuotes();
+  populateCategories();
+  filterQuotes();
+  alert('Data synced with server and conflicts resolved!');
+}
+
 // Function to initialize the application
 function init() {
   const selectedCategory = localStorage.getItem('selectedCategory') || 'all';
   document.getElementById('categoryFilter').value = selectedCategory;
   populateCategories();
   filterQuotes();
+  syncWithServer(); // Sync with server on initialization
 }
 
 // Event listener for the "Show New Quote" button
