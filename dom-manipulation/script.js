@@ -69,16 +69,15 @@ function filterQuotes() {
 async function fetchQuotesFromServer() {
   try {
       const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
-          method: 'POST',
+          method: 'GET',
           headers: {
               'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ title: 'example', body: 'example body', userId: 1 })
+          }
       });
       const data = await response.json();
       // Assuming the server returns an array of quote objects
-      quotes = data.map(item => ({ text: item.title, category: 'Server' }));
-      saveQuotes();
+      const serverQuotes = data.map(item => ({ text: item.title, category: 'Server' }));
+      resolveConflicts(serverQuotes);
       alert('Quotes fetched from server successfully!');
       populateCategories();
   } catch (error) {
@@ -86,12 +85,28 @@ async function fetchQuotesFromServer() {
   }
 }
 
-// Event listeners
+// Function to resolve conflicts between local and server data
+function resolveConflicts(serverQuotes) {
+  const localQuotes = JSON.parse(localStorage.getItem('quotes')) || [];
+  const combinedQuotes = [...serverQuotes, ...localQuotes];
+  const uniqueQuotes = Array.from(new Set(combinedQuotes.map(q => q.text)))
+      .map(text => combinedQuotes.find(q => q.text === text));
+  quotes = uniqueQuotes;
+  saveQuotes();
+}
+
+// Function to sync quotes with the server periodically
+function syncQuotes() {
+  fetchQuotesFromServer();
+  setInterval(fetchQuotesFromServer, 60000); // Sync every 60 seconds
+}
+
+// Initialize and load quotes
 document.getElementById('newQuote').addEventListener('click', showRandomQuote);
 document.getElementById('addQuoteButton').addEventListener('click', addQuote);
-document.getElementById('fetchQuotesButton').addEventListener('click', fetchQuotesFromServer);
 document.getElementById('categoryFilter').addEventListener('change', filterQuotes);
 
 // Initial population of categories and quotes display
 populateCategories();
 filterQuotes();
+syncQuotes();
