@@ -50,14 +50,17 @@ document.getElementById('addQuoteButton').addEventListener('click', addQuote);
 // Function to export quotes to a JSON file
 function exportQuotesToJson() {
   const dataStr = JSON.stringify(quotes);
-  const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+  const blob = new Blob([dataStr], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
 
   const exportFileDefaultName = 'quotes.json';
 
   const linkElement = document.createElement('a');
-  linkElement.setAttribute('href', dataUri);
+  linkElement.setAttribute('href', url);
   linkElement.setAttribute('download', exportFileDefaultName);
+  document.body.appendChild(linkElement); // Append the link to the body
   linkElement.click();
+  document.body.removeChild(linkElement); // Remove the link after downloading
 }
 
 // Event listener for the "Export Quotes as JSON" button
