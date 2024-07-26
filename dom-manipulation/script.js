@@ -27,7 +27,7 @@ function addQuote() {
     const newQuote = { text: newQuoteText, category: newQuoteCategory };
     quotes.push(newQuote);
     saveQuotes();
-    updateCategoryFilter();
+    populateCategories();
     alert('New quote added successfully!');
   } else {
     alert('Please enter both quote text and category.');
@@ -57,14 +57,14 @@ function importFromJsonFile(event) {
     const importedQuotes = JSON.parse(event.target.result);
     quotes.push(...importedQuotes);
     saveQuotes();
-    updateCategoryFilter();
+    populateCategories();
     alert('Quotes imported successfully!');
   };
   fileReader.readAsText(event.target.files[0]);
 }
 
 // Function to populate the category filter dropdown
-function updateCategoryFilter() {
+function populateCategories() {
   const categoryFilter = document.getElementById('categoryFilter');
   categoryFilter.innerHTML = '<option value="all">All Categories</option>';
 
@@ -98,7 +98,7 @@ function filterQuotes() {
 function init() {
   const selectedCategory = localStorage.getItem('selectedCategory') || 'all';
   document.getElementById('categoryFilter').value = selectedCategory;
-  updateCategoryFilter();
+  populateCategories();
   filterQuotes();
 }
 
