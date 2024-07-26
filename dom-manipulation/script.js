@@ -66,20 +66,18 @@ function filterQuotes() {
 }
 
 // Function to fetch quotes from the server
-function fetchQuotesFromServer() {
-  // Simulate a server fetch with JSONPlaceholder or a mock API
-  fetch('https://jsonplaceholder.typicode.com/posts')
-      .then(response => response.json())
-      .then(data => {
-          // Assuming the server returns an array of quote objects
-          quotes = data.map(item => ({ text: item.title, category: 'Server' }));
-          saveQuotes();
-          alert('Quotes fetched from server successfully!');
-          populateCategories();
-      })
-      .catch(error => {
-          console.error('Error fetching quotes from server:', error);
-      });
+async function fetchQuotesFromServer() {
+  try {
+      const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+      const data = await response.json();
+      // Assuming the server returns an array of quote objects
+      quotes = data.map(item => ({ text: item.title, category: 'Server' }));
+      saveQuotes();
+      alert('Quotes fetched from server successfully!');
+      populateCategories();
+  } catch (error) {
+      console.error('Error fetching quotes from server:', error);
+  }
 }
 
 // Event listeners
