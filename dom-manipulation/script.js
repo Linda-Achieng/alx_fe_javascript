@@ -68,7 +68,13 @@ function filterQuotes() {
 // Function to fetch quotes from the server
 async function fetchQuotesFromServer() {
   try {
-      const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+      const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ title: 'example', body: 'example body', userId: 1 })
+      });
       const data = await response.json();
       // Assuming the server returns an array of quote objects
       quotes = data.map(item => ({ text: item.title, category: 'Server' }));
