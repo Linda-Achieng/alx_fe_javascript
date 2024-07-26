@@ -16,7 +16,7 @@ function showRandomQuote() {
 }
 
 // Function to add a new quote
-function addQuote() {
+async function addQuote() {
   const newQuoteText = document.getElementById('newQuoteText').value;
   const newQuoteCategory = document.getElementById('newQuoteCategory').value;
   
@@ -26,6 +26,21 @@ function addQuote() {
       saveQuotes();
       alert('Quote added successfully!');
       populateCategories();
+
+      // Sync new quote with server
+      try {
+          const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(newQuote)
+          });
+          const data = await response.json();
+          console.log('Quote synced with server:', data);
+      } catch (error) {
+          console.error('Error syncing quote with server:', error);
+      }
   }
 }
 
