@@ -12,6 +12,12 @@
   <div id="quoteDisplay"></div>
   <button id="newQuote">Show New Quote</button>
   <div>
+
+  <!-- Category filter dropdown -->
+  <select id="categoryFilter" onchange="filterQuotes()">
+    <option value="all">All Categories</option>
+  </select>
+  
     <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
     <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
     <button id="addQuoteButton">Add Quote</button>
