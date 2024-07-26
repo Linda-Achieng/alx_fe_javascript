@@ -45,3 +45,17 @@ function addQuote() {
 // Event listener for the "Add Quote" button
 document.getElementById('addQuoteButton').addEventListener('click', addQuote);
 
+// Function to create the form for adding quotes (optional)
+function createAddQuoteForm() {
+  const formHtml = `
+    <div>
+      <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
+      <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
+      <button id="addQuoteButton">Add Quote</button>
+    </div>
+  `;
+  document.body.insertAdjacentHTML('beforeend', formHtml);
+}
+
+// Initialize the form creation (if needed)
+// createAddQuoteForm();
