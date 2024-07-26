@@ -17,7 +17,7 @@
   <select id="categoryFilter" onchange="filterQuotes()">
     <option value="all">All Categories</option>
   </select>
-  
+
     <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
     <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
     <button id="addQuoteButton">Add Quote</button>
@@ -27,6 +27,7 @@
     <button id="exportJsonButton">Export Quotes as JSON</button>
     <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />
   </div>
+  <button id="fetchQuotesButton">Fetch Quotes from Server</button>
   </div>
   
   <script src="script.js"></script>
