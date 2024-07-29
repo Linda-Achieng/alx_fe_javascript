@@ -86,6 +86,34 @@ function filterQuotes() {
   });
 }
 
+// Function to export quotes as JSON
+function exportQuotesAsJson() {
+  const dataStr = JSON.stringify(quotes);
+  const blob = new Blob([dataStr], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = "quotes.json";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// Function to import quotes from JSON file
+function importFromJsonFile(event) {
+  const fileReader = new FileReader();
+  fileReader.onload = function(event) {
+      const importedQuotes = JSON.parse(event.target.result);
+      quotes.push(...importedQuotes);
+      saveQuotes();
+      alert('Quotes imported successfully!');
+      populateCategories();
+  };
+  fileReader.readAsText(event.target.files[0]);
+}
+
 // Function to fetch quotes from the server
 async function fetchQuotesFromServer() {
   try {
@@ -117,6 +145,19 @@ function resolveConflicts(serverQuotes) {
   saveQuotes();
 }
 
+// Function to create the Add Quote form dynamically
+function createAddQuoteForm() {
+  const formContainer = document.createElement('div');
+  formContainer.innerHTML = `
+    <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
+    <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
+    <button id="addQuoteButton">Add Quote</button>
+  `;
+  document.querySelector('.container').appendChild(formContainer);
+
+  document.getElementById('addQuoteButton').addEventListener('click', addQuote);
+}
+
 // Function to sync quotes with the server periodically
 function syncQuotes() {
   fetchQuotesFromServer();
@@ -125,10 +166,12 @@ function syncQuotes() {
 
 // Initialize and load quotes
 document.getElementById('newQuote').addEventListener('click', showRandomQuote);
-document.getElementById('addQuoteButton').addEventListener('click', addQuote);
-document.getElementById('categoryFilter').addEventListener('change', filterQuotes);
+document.getElementById('exportJsonButton').addEventListener('click', exportQuotesAsJson);
+document.getElementById('importFile').addEventListener('change', importFromJsonFile);
+document.getElementById('fetchQuotesButton').addEventListener('click', fetchQuotesFromServer);
 
 // Initial population of categories and quotes display
 populateCategories();
 filterQuotes();
 syncQuotes();
+createAddQuoteForm();
